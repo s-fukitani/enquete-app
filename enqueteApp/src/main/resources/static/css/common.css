@@ -1,0 +1,55 @@
+@charset "UTF-8";
+/* 共通CSS */
+
+/* ページの見出し */
+.heading {
+	color: white;
+	background-color: navy;
+	padding-left: 10px;
+	height: 60px;
+	line-height: 60px;
+}
+
+/* メニューテキスト */
+.menu {
+	text-align: left;
+}
+
+/* ユーザー名およびログアウトボタン表示ページ */
+.user-logout {
+	display: flex;
+	justify-content: space-between;
+}
+
+/* テーブルヘッダー */
+.table-header {
+	text-align: center;
+	background-color: navy;
+	color: white;
+}
+
+/* テーブルのマージン */
+.table-common {
+	margin-left: 30px;
+}
+
+/* テーブルのボタン */
+.td-button {
+	text-align: center;
+}
+
+/* エラーメッセージのテキスト */
+.error-message {
+	color: red;
+}
+
+/* 完了メッセージのテキスト */
+.complete-message {
+	color: blue;
+}
+
+/* アンケートがない時のメッセージテキスト */
+.no-enquete-message {
+	color: red;	
+}
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート作成（概略）ページ -->
+<title>アンケート作成</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート作成画面（概略）</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<form th:action="@{/management/make}" method="post" th:object="${enqueteOutlineForm}">
+		アンケートタイトル<br><input type="text" name="enqueteTitle" size="120" th:value="${enqueteTitle != null ? enqueteTitle : ''}">
+		<div th:if="${#fields.hasErrors('enqueteTitle')}"></div>
+		<span class="error-message" th:if="${#fields.hasErrors('enqueteTitle')}" th:errors="*{enqueteTitle}"></span>
+		<br>
+		問題数
+		<br>
+		<select name="questionMax">
+			<option th:each ="i : ${#numbers.sequence(1, 15)}" th:value="${i}" th:selected="${questionMax == i}">[[${i}]]</option>
+		</select>
+		<br>
+		選択肢数
+		<br>
+		<select name="answerMax">
+			<option th:each ="i : ${#numbers.sequence(2, 5)}" th:value="${i}" th:selected="${answerMax == i}">[[${i}]]</option>
+		</select>
+		<br>
+		<input type="submit" value="詳細へ">
+	</form>
+	<hr>
+	<a th:href="@{/management}">アンケート管理メニューへ戻る</a>
+</body>
+</html>

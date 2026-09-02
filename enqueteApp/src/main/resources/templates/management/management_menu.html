@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート管理メニューページ -->
+<title>アンケート管理</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート管理メニュー</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<!-- 作成が完了して戻ってきたときに表示 -->
+	<p class="complete-message" th:if="${message}" th:text="${message}">
+		完了メッセージ
+	</p>
+	<p class="menu"><a th:href="@{/management/make}">アンケート作成</a></p>
+	<p class="menu"><a th:href="@{/management/delete}">アンケート削除</a></p>
+	<hr>
+	<a th:href="@{/}">メニュー画面へ戻る</a>
+</body>
+</html>

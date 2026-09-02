@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<meta charset="UTF-8">
+<!-- ユーザー作成ページ -->
+<title>ユーザー作成</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">ユーザー作成画面</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<form th:action="@{/user/make}" th:object="${makeUserForm}" th:method="post">
+		<table>
+			<tr>
+				<td class="table-header">
+					<label for="userName">ユーザー名</label>
+				</td>
+				<td>
+					<input type="text" name="userName" th:value="*{userName}">
+				</td>
+				<td>
+					<span class="error-message" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="table-header">
+					<label for="authority">権限</label>
+				</td>
+				<td>
+					<select name="authority">
+						<option th:value="${roleList[0]}" th:selected="${makeUserForm.authority == roleList[0]}">管理者</option>
+						<option th:value="${roleList[1]}" th:selected="${makeUserForm.authority == roleList[1]}">一般ユーザー</option>
+					</select>
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr>
+				<td class="table-header">
+					<label for="password">パスワード</label>
+				</td>
+				<td>
+					<input type="password" name="password" th:value="*{password}">
+				</td>
+				<td>
+					<!-- パスワードと確認用パスワード両方が入力されているが、内容が違う場合のエラーメッセージ -->
+					<span class="error-message"  th:if="${#fields.hasErrors('password') == false and #fields.hasErrors('confirmPassword') == false and #fields.hasErrors('samePassword')}" th:errors="*{samePassword}"></span>
+					<!-- パスワードが入力されていない場合のエラーメッセージ -->
+					<span class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+				</td>
+			</tr>
+			<tr>
+				<td class="table-header">
+					<label for="confirmPassword">確認用パスワード</label>
+				</td>
+				<td>
+					<input type="password" name="confirmPassword" th:value="*{confirmPassword}">
+				</td>
+				<td>
+					<span class="error-message" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<input type="submit" value="作成">
+		</div>
+	</form>
+	<hr>
+	<a th:href="@{/user}">ユーザー管理メニューへ戻る</a>
+</body>
+</html>

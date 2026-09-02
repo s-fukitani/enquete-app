@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 各ページ上部にログインユーザー名とログアウトボタンを表示（フラグメントで挿入） -->
+<title>user_logout</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<div th:fragment="user_logout" class="user-logout">
+		<!-- ログインユーザー名表示 -->
+		<span class="greeting" th:text="'ようこそ' + ${session.loginUserName} + 'さん'">ようこそゲストさん</span>
+		<form class="logout-btn" th:action="@{/logout}" method="post">
+			<input type="submit" value="ログアウト">
+		</form>
+	</div>
+</body>
+</html>

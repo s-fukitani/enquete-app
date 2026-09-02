@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<meta charset="UTF-8">
+<!-- アクセス権限に関するエラーのページ -->
+<title>403</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/error.css}">
+</head>
+<body>
+	<h2 class="heading">403 - アクセス拒否</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<div class="error-text">
+ 		このページにアクセスする権限がありません。
+ 	</div>
+ 	<hr>
+	<a th:href="@{/}">メニュー画面へ戻る</a>
+</body>
+</html>

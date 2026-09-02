@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート回答一覧ページ -->
+<title>アンケート回答</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/enquete.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート回答一覧</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<!-- 回答が完了して戻ってきたときに表示 -->
+	<p class="complete-message" th:if="${message}" th:text="${message}">
+		回答完了メッセージ
+	</p>
+	<div th:if="${enqueteMap.size() > 0}">
+		<table>
+			<tr th:each="enquete : ${enqueteMap}">
+				<td>
+					<!-- 未回答の時はリンクを表示 -->
+					<div th:if="${enquete.value == false}">
+						<a th:href="@{/enquete/{id}(id=${enquete.key.id})}" th:text="${enquete.key.enqueteTitle}">
+							アンケート
+						</a>
+					</div>
+					<!-- 回答済みの時はテキストを表示 -->
+					<div th:if="${enquete.value == true}">
+						[[${enquete.key.enqueteTitle}]]
+					</div>
+				</td>
+				<td>
+					<!-- 回答済みの時のみ表示 -->
+					<div th:if="${enquete.value == true}" class="answered">
+						[回答済み]
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div th:if="${enqueteMap.size() == 0}">
+		<span class="no-enquete-message" >アンケートがありません。</span>
+	</div>	
+	<hr>
+	<a th:href="@{/}">メニュー画面へ戻る</a>
+</body>
+</html>

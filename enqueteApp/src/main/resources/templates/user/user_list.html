@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+<meta charset="UTF-8">
+<!-- ユーザー一覧ページ -->
+<title>ユーザー一覧</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/user.css}">
+</head>
+<body>
+	<h2 class="heading">ユーザー一覧</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<!-- ユーザー登録、更新、削除が完了したときに表示する -->
+	<p class="complete-message" th:if="${message}" th:text="${message}">
+		完了メッセージ
+	</p>
+	<table class="user-table">
+		<tr class="table-header">
+    		<th>ユーザー名</th>
+    		<th>権限</th>
+    		<th colspan="2">操作</th>
+  		</tr>
+		<tr th:each="user : ${users}">
+			<td th:text="${user.userName}">
+				ユーザー名
+			</td>
+			<td th:text="${user.authority.getRoleString()}">
+				権限
+			</td>
+			<td class="td-button">
+				<!-- ログイン中のユーザーの箇所のみボタンを使用不可にする -->
+				<form th:action="@{/user/delete}" method="post">
+					<input type="hidden" th:value="${user.id}" th:name="userId">
+					<div th:if="${loginUserId != user.id}">
+						<input type="submit" value="削除">
+					</div>
+					<div th:if="${loginUserId == user.id}">
+						<input type="submit" value="削除" disabled>
+					</div>
+				</form>
+			</td>
+			<td>
+				<!-- ログイン中のユーザーの箇所のみボタンを使用不可にする -->
+				<form th:action="@{/user/update}" method="post">
+					<input type="hidden" th:value="${user.id}" th:name="userId">
+					<div th:if="${loginUserId != user.id}">
+						<input type="submit" value="更新">
+					</div>
+					<div th:if="${loginUserId == user.id}">
+						<input type="submit" value="更新" disabled>
+					</div>
+				</form>
+			</td>
+		</tr>
+	</table>
+	<hr>
+	<a th:href="@{/user}">ユーザー管理メニューへ戻る</a>
+</body>
+</html>

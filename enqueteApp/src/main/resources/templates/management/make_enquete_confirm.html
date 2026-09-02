@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート作成（確認）ページ -->
+<title>アンケート作成</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート作成画面（確認）</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<p>以下のアンケートを作成しますか？</p>
+	<!-- アンケート作成のためのフォーム -->
+	<form th:action="@{/management}" th:object="${enqueteDetailForm}" method="post">
+		アンケートタイトル：[[${enqueteTitle}]]
+		<input type="hidden" name="enqueteTitle" th:value="${enqueteTitle}">
+		<br>
+		<!-- 質問 -->
+		<div th:each="i : ${#numbers.sequence(1 ,questionMax)}">
+			　問[[${i}]]：[[${questions[__${i - 1}__]}]]<br>
+			<input type="hidden" th:name="questions[]" th:value="${questions[__${i - 1}__]}">
+			<!-- 選択肢 -->
+			<div th:each="j : ${#numbers.sequence(1 ,answerMax)}">
+				　　　[[${j}]]：[[${answers[__${i - 1}__][__${j - 1}__]}]]<br>
+				<input type="hidden" th:name="answers[__${i - 1}__][]" th:value="${answers[__${i - 1}__][__${j - 1}__]}">
+			</div>
+		<br>
+		</div>
+		<input type="submit" value="作成する">
+	</form>
+	<hr>
+	<!-- アンケート作成（詳細）ページに戻る際にデータを渡すためのフォーム --> 
+	<form id="form2" th:action="@{/management/make/detail}" th:object="${enqueteDetailForm}" method="post">
+		<input type="hidden" name="questionMax" th:value="${questionMax}">
+		<input type="hidden" name="answerMax" th:value="${answerMax}">
+		<input type="hidden" name="enqueteTitle" th:value="${enqueteTitle}">
+		<div th:each="i : ${#numbers.sequence(1 ,questionMax)}">
+			<input type="hidden" th:name="questions[]" th:value="${questions[__${i - 1}__]}">
+			<div th:each="j : ${#numbers.sequence(1 ,answerMax)}">
+				<input type="hidden" th:name="answers[__${i - 1}__][]" th:value="${answers[__${i - 1}__][__${j - 1}__]}">
+			</div>
+		</div>
+	</form>
+	<!-- ボタンを使用せずにアンケート作成（詳細）の入力欄にデータを表示させるためにhrefを以下の通りにしている -->
+	<a href="javascript:form2.submit()">詳細へ戻る</a>
+</body>
+</html>

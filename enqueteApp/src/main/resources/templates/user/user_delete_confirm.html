@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- ユーザー削除（確認）ページ -->
+<title>ユーザー削除</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">ユーザー削除（確認）</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	ユーザー「[[${enqueteUser.userName}]]」を削除しますか？
+	<form th:action="@{/user/delete/confirm}" method="post">
+		<input type="hidden" th:value="${enqueteUser.id}" name="userId">
+		<br>
+		<input type="submit" value="削除する">
+	</form>
+	<hr>
+	<a th:href="@{/user/list}">ユーザー一覧へ戻る</a>
+</body>
+</html>

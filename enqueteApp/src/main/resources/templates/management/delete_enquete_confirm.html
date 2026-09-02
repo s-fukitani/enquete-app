@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート削除（確認）ページ -->
+<title>アンケート削除</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート削除画面（確認）</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	アンケート「[[${enquete.enqueteTitle}]]」を削除しますか？
+	<form th:action="@{/management/delete/confirm}" method="post">
+		<input type="hidden" th:value="${enquete.id}" name="enqueteId">
+		<br>
+		<input type="submit" value="削除する">
+	</form>
+	<hr>
+	<a th:href="@{/management/delete}">アンケート削除画面（一覧）へ戻る</a>
+</body>
+</html>

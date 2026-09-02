@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 集計結果ページ -->
+<title th:text="${enquete.enqueteTitle}">アンケートタイトル</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/total.css}">
+</head>
+<body>
+	<h2 class="heading" th:text="${enquete.enqueteTitle}">アンケートタイトル</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<div th:each="question, stat : ${enquete.questionList}">
+		<input type="hidden" name="enqueteId" th:value="${enquete.id}">
+		<!-- 質問 -->
+		<p class="total-question-text" th:text="'質問' + ${stat.index + 1} + '　' + ${question.questionText}"></p>
+		<input type="hidden" name="questionId[]" th:value="${question.id}">
+		<!-- 選択肢 -->
+		<table class="total-table">
+			<div th:each="answer, stat : ${question.answerList}">
+				<tr>
+					<td>
+						<span th:name="'answerMap[' + ${question.id} + ']'" th:text="${answer.answerText}"></span>
+					</td>
+					<td>
+						<!-- 対象の選択肢を1人でも選んだ場合はその合計を表示 -->
+						<div th:if="${countMap[answer.id] != null}">
+							<span class="total-count" th:name="'answerMap[' + ${question.id} + ']'" th:text="${countMap[answer.id] + '票'}"></span>
+						</div>
+						<!-- 対象の選択肢を1人も選ばなかった場合は0を表示 -->
+						<div th:unless="${countMap[answer.id] != null}">
+							<span class="total-count" th:name="'answerMap[' + ${question.id} + ']'" th:text="${'0' +  + '票'}"></span>
+						</div>
+					</td>
+				</tr>
+			</div>
+			<tr class="total-sum-border">
+				<td class="total-sum-text">
+					<span>合計</span>
+				</td>
+				<td>
+					<!-- 1問毎の合計を表示 -->
+					<span class="total-count" th:name="'sumList[' + ${stat.index} + ']'" th:text="${sumList[stat.index] + '票'}"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<hr>
+	<a th:href="@{/total}">アンケート結果一覧へ戻る</a>
+</body>
+</html>

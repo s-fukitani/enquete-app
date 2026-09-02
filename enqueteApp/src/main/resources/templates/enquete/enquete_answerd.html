@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 選択したアンケートが回答済みだった時に表示されるページ（回答済みのアンケートはリンクを無効化したのでこのページは不要になった） -->
+<title>回答済みアンケート</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading" th:text="${enquete.enqueteTitle}">アンケートタイトル</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<p>このアンケートは回答済みです。</p>
+	<hr>
+	<a th:href="@{/enquete}">アンケート一覧へ戻る</a>
+</body>
+</html>

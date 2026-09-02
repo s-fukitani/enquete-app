@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <!-- Mapperとxmlのマッピング -->
+ <mapper namespace="katachi.spring.sample.repository.EnqueteMapper">
+ 
+ 	<!-- EnqueteのResultMap -->
+  	<resultMap type="katachi.spring.sample.entity.Enquete" id="enqueteSelectResult">
+ 		<id column="enqueteId" property="id"/>
+ 		<result column="enqueteTitle" property="enqueteTitle"/>
+ 		<collection property="questionList" ofType="katachi.spring.sample.entity.Question">
+ 			<id column="questionId" property="id"/>
+ 			<result column="questionText" property="questionText"/>
+ 			<collection property="answerList" ofType="katachi.spring.sample.entity.Answer">
+ 				<id column="answerId" property="id"/>
+ 				<result column="answerText" property="answerText"/>
+ 			</collection>
+ 		</collection>
+ 	</resultMap>
+ 	
+ 	<!-- ResultのResultMap -->
+ 	<resultMap type="katachi.spring.sample.entity.Result" id="enqueteSubmitResult">
+ 		<id column="id" property="id"/>
+ 		<result column="enqueteId" property="enqueteId"/>
+ 		<result column="questionId" property="questionId"/>
+ 		<result column="answerId" property="answerId"/>
+ 	</resultMap>
+ 	
+ 	<!-- 全アンケート情報を取得するクエリ -->
+  	<select id="selectEnqueteAll" resultMap="enqueteSelectResult">
+		SELECT 
+		enquete_table.id as enqueteId, 
+		enquete_title as enqueteTitle, 
+		question_table.id as questionId,
+		question_table.question_text as questionText, 
+		answer_table.id as answerId,
+		answer_table.answer_text as answerText 
+		FROM 
+			enquete_table
+		INNER JOIN 
+			question_table ON enquete_table.id = question_table.enquete_id 
+		INNER JOIN 
+			answer_table ON question_table.id = answer_table.question_id 
+		ORDER BY enqueteId ASC
+  	</select>
+  	
+  	<!-- 対象IDのアンケート情報を取得するクエリ -->
+   	<select id="selectEnqueteById" resultMap="enqueteSelectResult">
+		SELECT 
+		enquete_table.id as enqueteId, 
+		enquete_title as enqueteTitle, 
+		question_table.id as questionId,
+		question_table.question_text as questionText, 
+		answer_table.id as answerId,
+		answer_table.answer_text as answerText 
+		FROM 
+			enquete_table
+		INNER JOIN 
+			question_table ON enquete_table.id = question_table.enquete_id 
+		INNER JOIN 
+			answer_table ON question_table.id = answer_table.question_id
+ 		WHERE enquete_table.id = #{id}
+  	</select>
+  	
+  	<!-- 1問毎の回答結果を登録するクエリ -->
+  	<insert id="insertResult">
+  	  	INSERT INTO result_table (
+  	  				 enquete_id,
+  	  				 question_id, 
+  	  				 answer_id,
+  	  				 user_id) 
+  		VALUES 
+  		(#{enqueteId}, #{questionId}, #{answerId}, #{userId})
+  	</insert>
+  	
+  	<!-- 指定された選択肢が選ばれた数を算出するクエリ -->
+  	<select id="countResultById">
+  		SELECT COUNT(*) 
+  		FROM result_table 
+		WHERE enquete_id = #{enqueteId} 
+		AND question_id = #{questionId} 
+		AND answer_id = #{answerId}
+  	</select>
+  	
+  	<!-- 指定されたユーザーが対象のアンケートを回答済みかどうかのチェックを行うクエリ（1以上が返ってきたときは回答済み） -->
+  	<select id="countResultByEnqueteIdAndUserId">
+  		SELECT COUNT(*) 
+  		FROM result_table 
+  		WHERE enquete_id = #{enqueteId} 
+		AND user_id = #{userId} 
+  	</select>
+  	
+  	<!-- アンケートの登録を行うクエリ -->
+  	<insert id="insertEnquete">
+   	  	INSERT INTO enquete_table (
+  	  				 enquete_title) 
+  		VALUES 
+  		(#{enqueteTitle}) 	
+  	</insert>
+  	
+  	<!-- 質問の登録を行うクエリ -->
+  	<insert id="insertQuestion">
+   	  	INSERT INTO question_table (
+   	  				enquete_id, 
+   	  				question_text) 
+  		VALUES 
+  		(#{enqueteId}, #{questionText}) 	
+  	</insert>
+  	
+  	<!-- 選択肢の登録を行うクエリ -->
+  	<insert id="insertAnswer">
+   	  	INSERT INTO answer_table (
+   	  				question_id, 
+   	  				answer_text) 
+  		VALUES 
+  		(#{questionId}, #{answerText}) 	
+  	</insert>
+  	
+  	<!-- 指定されたタイトルのアンケートのIDを取得するクエリ -->
+  	<select id="selectEnqueteIdByTitle">
+  		SELECT 
+		id as enqueteId
+		FROM enquete_table
+		WHERE enquete_title = #{enqueteTitle}
+  	</select>
+  	
+  	<!-- 既に同じタイトルのアンケートが登録されていないかのチェックを行うクエリ（1以上が返ってきたときは登録されている） -->
+  	<select id="countEnqueteByTitle">
+  		SELECT COUNT(*) 
+  		FROM 
+			enquete_table 
+		WHERE 
+			enquete_title = #{enqueteTitle}
+  	</select>
+  	
+  	<!-- 指定されたアンケート内で指定されたテキストの質問のIDを取得するクエリ -->
+  	<select id="selectQuestionIdByText">
+  		SELECT 
+		id as questionId
+		FROM question_table
+		WHERE question_text = #{questionText}
+		AND enquete_id = #{enqueteId}
+  	</select>
+  	
+  	<!-- 指定された質問に属する全ての選択肢を削除するクエリ -->
+  	<delete id="deleteAnswerByQuestionId">
+  		DELETE FROM answer_table 
+  		WHERE question_id = #{questionId}
+  	</delete>
+  	
+  	<!-- 指定されたアンケートの全ての質問を削除するクエリ -->
+  	<delete id="deleteQuestionByEnqueteId">
+  		DELETE FROM question_table 
+  		WHERE enquete_id = #{enqueteId}
+  	</delete>
+  	
+  	<!-- 指定されたアンケートの削除を行うクエリ -->
+  	<delete id="deleteEnqueteById">
+  		DELETE FROM enquete_table 
+  		WHERE id = #{id}
+  	</delete>
+  	
+  	<!-- 指定されたアンケートの回答結果の削除を行うクエリ -->
+  	<delete id="deleteResultByEnqueteId">
+  		DELETE FROM result_table 
+  		WHERE enquete_id = #{enqueteId}
+  	</delete>
+  	
+  	<!-- 指定されたユーザー名のユーザー情報を取得するクエリ -->
+  	<select resultType="katachi.spring.sample.entity.EnqueteUser" id="selectByUserName">
+ 		SELECT id, user_name, password, authority 
+ 		FROM users_table 
+ 		WHERE user_name = #{userName}
+ 	</select>
+ 	
+ 	<!-- 既に同じユーザー名のユーザーが登録されていないかのチェックを行うクエリ（1以上が返ってきたときは登録されている） -->
+ 	<select id="countUserByUserName">
+ 		SELECT COUNT(*) 
+ 		FROM users_table
+ 		WHERE user_name = #{userName}
+ 	</select>
+ 	
+ 	<!-- 指定されたユーザーIDのユーザー情報を取得するクエリ -->
+  	<select resultType="katachi.spring.sample.entity.EnqueteUser" id="selectByUserId">
+ 		SELECT id, user_name, password, authority 
+ 		FROM users_table 
+ 		WHERE id = #{id}
+ 	</select> 	
+ 	
+ 	<!-- 全ユーザー情報を取得するクエリ -->
+ 	<select resultType="katachi.spring.sample.entity.EnqueteUser" id="selectUserAll">
+ 		SELECT id, user_name, password, authority 
+ 		FROM users_table 
+ 		ORDER BY id ASC	
+ 	</select>
+ 	
+ 	<!-- ユーザーの登録を行うクエリ -->
+  	<insert id="insertUser">
+   	  	INSERT INTO users_table (
+   	  				user_name, 
+   	  				password,
+   	  				authority) 
+  		VALUES 
+  		(#{userName}, #{password}, #{authority}) 	
+  	</insert>
+  	
+  	<!-- ユーザーの更新を行うクエリ -->
+  	<update id="updateUser">
+  		UPDATE 
+  			users_table 
+  		SET 
+  			user_name = #{userName}, 
+  			password = #{password}, 
+  			authority = #{authority} 
+  		WHERE 
+  			id = #{id}
+  	</update>
+  	
+  	<!-- ユーザーの削除を行うクエリ -->
+  	<delete id="deleteUserById">
+  		DELETE FROM users_table
+  		WHERE id = #{id}
+  	</delete>
+  	
+  	<!-- 削除対象のユーザーが回答したアンケートの回答結果の削除を行うクエリ -->
+  	<delete id="deleteResultByUserId">
+  		DELETE FROM result_table
+  		WHERE user_id = #{userId}
+  	</delete>
+  		
+ </mapper>

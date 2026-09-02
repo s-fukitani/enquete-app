@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート回答ページ -->
+<title th:text="${enquete.enqueteTitle}">アンケートタイトル</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/enquete.css}">
+</head>
+<body>
+	<h2 class="heading" th:text="${enquete.enqueteTitle}">アンケートタイトル</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<form th:action="@{/enquete}" method="post" th:object="${enqueteForm}">
+		<input type="hidden" name="userId" th:value="${userId}">
+		<input type="hidden" name="enqueteId" th:value="${enquete.id}">
+		<div th:each="question, stat : ${enquete.questionList}">
+			<!-- 質問 -->
+			<p class="enquete-question-text" th:text="'質問' + ${stat.index + 1} + '　' + ${question.questionText}"></p>
+			<!-- 選択肢（1番目の選択肢が選択された状態で表示する） -->
+			<input type="hidden" name="questionId[]" th:value="${question.id}">
+			<table class="enquete-answer-table">
+				<div th:each="answer, stat : ${question.answerList}">					
+					<tr>
+						<td class="enquete-answer-radio">
+							<div th:if="${stat.index == 0}">
+								<input type="radio" th:name="'answerMap[' + ${question.id} + ']'" 
+								th:value="${answer.id}" checked>
+							</div>
+							<div th:unless="${stat.index == 0}">
+								<input type="radio" th:name="'answerMap[' + ${question.id} + ']'" 
+								th:value="${answer.id}">
+							</div>
+						</td>
+						<td>
+							[[${answer.answerText}]]
+						</td>
+					</tr>
+				</div>
+			</table>
+			<br>
+		</div>
+		<br>
+		<input type="submit" value="回答">
+	</form>
+	<hr>
+	<a th:href="@{/enquete}">アンケート一覧へ戻る</a>
+</body>
+</html>

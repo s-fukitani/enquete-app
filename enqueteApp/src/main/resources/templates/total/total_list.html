@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- アンケート結果一覧ページ -->
+<title>アンケート集計</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/common.css}">
+</head>
+<body>
+	<h2 class="heading">アンケート結果一覧</h2>
+	<div th:replace="'common/user_logout' :: user_logout"></div>
+	<hr>
+	<div th:if="${enquetes.size() > 0}">
+		<table>
+			<tr th:each="enquete : ${enquetes}">
+				<td>
+					<a th:href="@{/total/{id}(id=${enquete.id})}" th:text="${enquete.enqueteTitle}">
+						アンケート
+					</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div th:if="${enquetes.size() == 0}">
+		<span class="no-enquete-message" >アンケートがありません。</span>
+	</div>	
+	<hr>
+	<a th:href="@{/}">メニュー画面へ戻る</a>
+</body>
+</html>
